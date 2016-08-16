@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/todo_item_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/todo_item_edit"
+        android:text="@string/todo_item_edit"
+        android:textSize="9sp"
+        android:padding="0sp"
+        android:layout_width="50sp"
+        android:layout_height="20sp"
+        android:layout_below="@id/todo_item_title"
+        android:layout_alignLeft="@id/todo_item_title" />
+
+    <Button
+        android:id="@+id/todo_item_finish"
+        android:text="@string/todo_item_finish"
+        android:textSize="9sp"
+        android:padding="0sp"
+        android:layout_width="50sp"
+        android:layout_height="20sp"
+        android:layout_below="@id/todo_item_title"
+        android:layout_alignRight="@id/todo_item_title"/>
+
+</RelativeLayout>
