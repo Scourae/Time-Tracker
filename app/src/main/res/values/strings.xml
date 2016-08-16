@@ -18,6 +18,6 @@
     <string name="todo_item_finish">Remove</string>
     <string name="add_task_title">Title:</string>
     <string name="add_task_description">Description:</string>
-    <string name="add">Add</string>
+    <string name="accept">Accept</string>
     <string name="cancel">Cancel</string>
 </resources>

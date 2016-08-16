@@ -45,7 +45,7 @@ public class AddTaskDialogue extends DialogFragment {
         }
         final boolean isEditToInner = isEdit;
         final int positionToInner = position;
-        builder.setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.accept, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
                 EditText titleView = (EditText) view.findViewById(R.id.add_task_title);

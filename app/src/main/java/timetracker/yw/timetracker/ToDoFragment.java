@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,21 +46,6 @@ public class ToDoFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 Button editButton = (Button) view.findViewById(R.id.todo_item_edit);
                 editButton.setVisibility(View.VISIBLE);
-                if (!editButton.hasOnClickListeners()) {
-                    editButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Bundle bundle = new Bundle();
-                            bundle.putString("name", mToDoList.get(position).getName());
-                            bundle.putString("description", mToDoList.get(position).getDescription());
-                            bundle.putInt("position", position);
-                            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                            AddTaskDialogue addTaskDialogue = new AddTaskDialogue();
-                            addTaskDialogue.setArguments(bundle);
-                            addTaskDialogue.show(fragmentTransaction, "dialog");
-                        }
-                    });
-                }
                 Button deleteButton = (Button) view.findViewById(R.id.todo_item_finish);
                 deleteButton.setVisibility(View.VISIBLE);
                 previousHighlightPosition = position;
@@ -125,11 +111,39 @@ public class ToDoFragment extends Fragment {
             View rowView = inflater.inflate(R.layout.todo_task_item, parent, false);
             TextView titleView = (TextView) rowView.findViewById(R.id.todo_item_title);
             titleView.setText(mToDoList.get(position).getName());
+            Button editButton = (Button) rowView.findViewById(R.id.todo_item_edit);
+            Button deleteButton = (Button) rowView.findViewById(R.id.todo_item_finish);
             if (position != previousHighlightPosition) {
-                Button editButton = (Button) rowView.findViewById(R.id.todo_item_edit);
                 editButton.setVisibility(View.GONE);
-                Button deleteButton = (Button) rowView.findViewById(R.id.todo_item_finish);
                 deleteButton.setVisibility(View.GONE);
+            }
+            else {
+                if (!editButton.hasOnClickListeners()) {
+                    final int pos = position;
+                    editButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Bundle bundle = new Bundle();
+                            bundle.putString("name", mToDoList.get(pos).getName());
+                            bundle.putString("description", mToDoList.get(pos).getDescription());
+                            bundle.putInt("position", pos);
+                            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                            AddTaskDialogue addTaskDialogue = new AddTaskDialogue();
+                            addTaskDialogue.setArguments(bundle);
+                            addTaskDialogue.show(fragmentTransaction, "dialog");
+                        }
+                    });
+                }
+                if (!deleteButton.hasOnClickListeners()) {
+                    final int pos = position;
+                    deleteButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mToDoList.remove(pos);
+                            notifyDataSetChanged();
+                        }
+                    });
+                }
             }
             return rowView;
         }
