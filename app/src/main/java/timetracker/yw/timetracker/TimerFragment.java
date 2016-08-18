@@ -13,11 +13,15 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -38,7 +42,9 @@ public class TimerFragment extends Fragment {
     private State currentState;
     // time display
     private String timeFormat = "HH:mm:ss";
+    private String timeFormatFull = "HH:mm:ss yyyy/MM/dd";
     SimpleDateFormat sdf;
+    SimpleDateFormat sdfStart;
     // time storage
     List<Task> tasks;
     // current task
@@ -57,6 +63,7 @@ public class TimerFragment extends Fragment {
         currentState = State.stop;
         sdf = new SimpleDateFormat(timeFormat, Locale.CANADA);
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        sdfStart = new SimpleDateFormat(timeFormatFull, Locale.CANADA);
         taskID = "";
     }
 
@@ -126,28 +133,35 @@ public class TimerFragment extends Fragment {
     }
 
     private void selectTask() {
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
-        dialogBuilder.setTitle(taskDialogue);
-        List<Task> taskOptions = mToDoFragment.getTasks();
-        CharSequence[] taskNames = new CharSequence[taskOptions.size() + 1];
-        taskNames[0] = "";
-        for (int i = 0; i < taskOptions.size(); i++) {
-            taskNames[i+1] = taskOptions.get(i).getName();
+        if (mToDoFragment.getTasks().size() == 0) {
+            Toast.makeText(getActivity(), "No tasks yet", Toast.LENGTH_SHORT).show();
         }
-        dialogBuilder.setSingleChoiceItems(taskNames, -1, new DialogInterface.OnClickListener(){
-            public void onClick(DialogInterface dialog, int item) {
-                if (item == 0) {
-                    taskID = "";
-                }
-                else {
-                    taskID = mToDoFragment.getTaskByPosition(item-1).getID();
-                }
-                updateTask();
-                dialog.dismiss();
+        else if (currentState == State.start) {
+            Toast.makeText(getActivity(), "Current task is running", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
+            dialogBuilder.setTitle(taskDialogue);
+            List<Task> taskOptions = mToDoFragment.getTasks();
+            CharSequence[] taskNames = new CharSequence[taskOptions.size() + 1];
+            taskNames[0] = "";
+            for (int i = 0; i < taskOptions.size(); i++) {
+                taskNames[i + 1] = taskOptions.get(i).getName();
             }
-        });
-        AlertDialog selectTask = dialogBuilder.create();
-        selectTask.show();
+            dialogBuilder.setSingleChoiceItems(taskNames, -1, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int item) {
+                    if (item == 0) {
+                        taskID = "";
+                    } else {
+                        taskID = mToDoFragment.getTaskByPosition(item - 1).getID();
+                    }
+                    updateTask();
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog selectTask = dialogBuilder.create();
+            selectTask.show();
+        }
     }
 
     private void setButtonState(State state) {
@@ -183,7 +197,10 @@ public class TimerFragment extends Fragment {
     }
 
     private void startClick() {
-        if (currentState != State.start) {
+        if ((currentState != State.start)&&(!taskID.equals(""))) {
+            TextView startText = (TextView) mView.findViewById(R.id.start_time_text);
+            String startTime = "Started: " + sdfStart.format(new Date());
+            startText.setText(startTime);
             timeCount = 0;
             start = Calendar.getInstance();
             updateTime(0);

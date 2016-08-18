@@ -9,15 +9,23 @@
         android:layout_height="50dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
+        android:layout_marginBottom="50dp"
         />
 
     <TextView
-        android:id="@+id/timer_text"
-        android:layout_below="@id/timer_task"
+        android:id="@+id/start_time_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/timer_task"
         android:textAlignment="center"
-        android:layout_marginTop="50dp">
+    />
+
+    <TextView
+        android:id="@+id/timer_text"
+        android:layout_below="@id/start_time_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center">
     </TextView>
 
     <Button
