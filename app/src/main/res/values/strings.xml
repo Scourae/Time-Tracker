@@ -20,4 +20,6 @@
     <string name="add_task_description">Description:</string>
     <string name="accept">Accept</string>
     <string name="cancel">Cancel</string>
+    <string name="left_arrow">&lt;</string>
+    <string name="right_arrow">&gt;</string>
 </resources>
