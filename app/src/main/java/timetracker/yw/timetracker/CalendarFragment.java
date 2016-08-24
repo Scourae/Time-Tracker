@@ -16,6 +16,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
     private int currMonth;
     private int currYear;
     private Button timeSelect;
+    private DateAdapter mAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

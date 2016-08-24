@@ -45,17 +45,15 @@ public class TimerFragment extends Fragment {
     private String timeFormatFull = "HH:mm:ss yyyy/MM/dd";
     SimpleDateFormat sdf;
     SimpleDateFormat sdfStart;
-    // time storage
-    List<Task> tasks;
     // current task
     String taskID;
     Button mTaskButton;
     ToDoFragment mToDoFragment;
+    Task currentTask;
 
     public enum State {
         stop,
         start,
-        pause,
     }
 
     public TimerFragment() {
@@ -65,6 +63,8 @@ public class TimerFragment extends Fragment {
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         sdfStart = new SimpleDateFormat(timeFormatFull, Locale.CANADA);
         taskID = "";
+        start = null;
+        currentTask = null;
     }
 
     @Override
@@ -93,13 +93,6 @@ public class TimerFragment extends Fragment {
                 startClick();
             }
         });
-        Button pauseButton = (Button) mView.findViewById(R.id.timer_pause);
-        pauseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pauseClick();
-            }
-        });
         Button stopButton = (Button) mView.findViewById(R.id.timer_stop);
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,7 +114,7 @@ public class TimerFragment extends Fragment {
             mTaskButton.setText(emptyTaskButton);
         }
         else {
-            Task currentTask = mToDoFragment.getTaskById(taskID);
+            currentTask = mToDoFragment.getTaskById(taskID);
             if (currentTask == null) {
                 taskID = "";
                 mTaskButton.setText(emptyTaskButton);
@@ -185,14 +178,6 @@ public class TimerFragment extends Fragment {
             stopButton.setClickable(true);
             stopButton.setBackgroundColor(0xff0000);
         }
-        else if (state == State.pause) {
-            startButton.setClickable(true);
-            startButton.setBackgroundColor(0x00ff00);
-            pauseButton.setClickable(false);
-            pauseButton.setBackgroundColor(0x222222);
-            stopButton.setClickable(true);
-            stopButton.setBackgroundColor(0xff0000);
-        }
         */
     }
 
@@ -210,15 +195,14 @@ public class TimerFragment extends Fragment {
         }
     }
 
-    private void pauseClick() {
-        mTimer.stop();
-        currentState = State.pause;
-        setButtonState(currentState);
-    }
-
     private void stopClick() {
         mTimer.stop();
         currentState = State.stop;
         setButtonState(currentState);
+        if (start != null) {
+            currentTask.addTime(start.getTime(), Calendar.getInstance().getTime());
+            Toast.makeText(getActivity(), "Time Added!", Toast.LENGTH_SHORT).show();
+            start = null;
+        }
     }
 }

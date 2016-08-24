@@ -104,23 +104,36 @@ public class ToDoFragment extends Fragment {
             this.mToDoList = toDoList;
         }
 
+        class ViewHolderItem {
+            TextView titleView;
+            Button editButton;
+            Button deleteButton;
+        }
+
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            // TODO: do view holder pattern later
-            LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View rowView = inflater.inflate(R.layout.todo_task_item, parent, false);
-            TextView titleView = (TextView) rowView.findViewById(R.id.todo_item_title);
-            titleView.setText(mToDoList.get(position).getName());
-            Button editButton = (Button) rowView.findViewById(R.id.todo_item_edit);
-            Button deleteButton = (Button) rowView.findViewById(R.id.todo_item_finish);
-            if (position != previousHighlightPosition) {
-                editButton.setVisibility(View.GONE);
-                deleteButton.setVisibility(View.GONE);
+            ViewHolderItem viewHolder;
+            if (convertView == null) {
+                viewHolder = new ViewHolderItem();
+                LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                convertView = inflater.inflate(R.layout.todo_task_item, parent, false);
+                viewHolder.titleView = (TextView) convertView.findViewById(R.id.todo_item_title);
+                viewHolder.editButton = (Button) convertView.findViewById(R.id.todo_item_edit);
+                viewHolder.deleteButton = (Button) convertView.findViewById(R.id.todo_item_finish);
+                convertView.setTag(viewHolder);
             }
             else {
-                if (!editButton.hasOnClickListeners()) {
+                viewHolder = (ViewHolderItem) convertView.getTag();
+            }
+            viewHolder.titleView.setText(mToDoList.get(position).getName());
+            if (position != previousHighlightPosition) {
+                viewHolder.editButton.setVisibility(View.GONE);
+                viewHolder.deleteButton.setVisibility(View.GONE);
+            }
+            else {
+                if (!viewHolder.editButton.hasOnClickListeners()) {
                     final int pos = position;
-                    editButton.setOnClickListener(new View.OnClickListener() {
+                    viewHolder.editButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Bundle bundle = new Bundle();
@@ -134,9 +147,9 @@ public class ToDoFragment extends Fragment {
                         }
                     });
                 }
-                if (!deleteButton.hasOnClickListeners()) {
+                if (!viewHolder.deleteButton.hasOnClickListeners()) {
                     final int pos = position;
-                    deleteButton.setOnClickListener(new View.OnClickListener() {
+                    viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             mToDoList.remove(pos);
@@ -145,7 +158,7 @@ public class ToDoFragment extends Fragment {
                     });
                 }
             }
-            return rowView;
+            return convertView;
         }
     }
 }

@@ -1,6 +1,8 @@
 package timetracker.yw.timetracker;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -10,11 +12,11 @@ public class Task {
 
     private String name;
     private String description;
-    private Date begin;
-    private Date end;
+    private List<TimeSegment> mTimeList;
     private UUID id;
 
     public Task(String name, String description) {
+        mTimeList = new ArrayList<>();
         this.name = name;
         this.description = description;
         this.id = UUID.randomUUID();
@@ -28,12 +30,8 @@ public class Task {
         this.description = description;
     }
 
-    public void BeginTime(Date begin) {
-        this.begin = begin;
-    }
-
-    public void EndTime(Date end) {
-        this.end = end;
+    public void addTime(Date begin, Date end) {
+        mTimeList.add(new TimeSegment(begin, end));
     }
 
     public String getName() {
