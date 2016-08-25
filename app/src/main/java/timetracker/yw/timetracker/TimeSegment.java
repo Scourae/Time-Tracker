@@ -14,14 +14,16 @@ public class TimeSegment {
         this.end = end;
     }
 
-    public boolean onDate(Date timeBegin, Date timeEnd) {
-        if ((timeEnd.before(end))&&(timeBegin.after(begin))) {
+    public TimeSegment(TimeSegment copy) {
+        this(copy.getBegin(), copy.getEnd());
+    }
+
+    public boolean onDate(Date date) {
+        // TODO test this
+        if ((date.equals(end))||(date.equals(begin))) {
             return true;
         }
-        else if ((timeBegin.before(begin))&&(timeEnd.after(begin))) {
-            return true;
-        }
-        else if ((timeBegin.before(end))&&(timeEnd.after(end))) {
+        else if ((date.after(begin))&&(date.before(end))) {
             return true;
         }
         return false;

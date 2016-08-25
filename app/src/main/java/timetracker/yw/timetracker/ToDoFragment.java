@@ -29,8 +29,8 @@ public class ToDoFragment extends Fragment {
     // for item button visibility
     private int previousHighlightPosition;
 
-    public ToDoFragment() {
-        mToDoList = new ArrayList<>();
+    public void SetTaskList(TaskManager taskManager) {
+        mToDoList = taskManager.mTasks;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class ToDoFragment extends Fragment {
         previousHighlightPosition = -1;
         mView = inflater.inflate(R.layout.todo_fragment, container, false);
         mListView = (ListView) mView.findViewById(R.id.todo_tasks);
-        mAdapter = new ToDoAdapter(getActivity(), mToDoList);
+        mAdapter = new ToDoAdapter(mToDoList);
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -98,9 +98,9 @@ public class ToDoFragment extends Fragment {
         private Context mContext;
         private List<Task> mToDoList;
 
-        public ToDoAdapter(Context context, List<Task> toDoList) {
-            super(context, -1, toDoList);
-            this.mContext = context;
+        public ToDoAdapter(List<Task> toDoList) {
+            super(getActivity(), -1, toDoList);
+            this.mContext = getActivity();
             this.mToDoList = toDoList;
         }
 

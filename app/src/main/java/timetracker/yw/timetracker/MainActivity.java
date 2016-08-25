@@ -31,6 +31,8 @@ public class MainActivity extends Activity {
     private CalendarFragment mCalendarFragment;
     private AnalysisFragment mAnalysisFragment;
 
+    private TaskManager mTaskManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,11 +64,18 @@ public class MainActivity extends Activity {
         };
         mDrawerLayout.addDrawerListener(mDrawerToggle);
 
+        // load tasks
+        mTaskManager = new TaskManager();
+        mTaskManager.getTasksFromFile();
+
         // fragments
         mFragmentManager = getFragmentManager();
         mToDoFragment = new ToDoFragment();
+        mToDoFragment.SetTaskList(mTaskManager);
         mTimerFragment = new TimerFragment();
         mCalendarFragment = new CalendarFragment();
+        mCalendarFragment.setTaskManager(mTaskManager);
+        mCalendarFragment.setActivity(this);
         mAnalysisFragment = new AnalysisFragment();
         if (savedInstanceState == null) {
             selectItem(0);

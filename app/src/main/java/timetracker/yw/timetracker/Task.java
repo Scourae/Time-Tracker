@@ -5,9 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * Created by Person on 2016-05-03.
- */
 public class Task {
 
     private String name;
@@ -30,6 +27,14 @@ public class Task {
         this.description = description;
     }
 
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public void setTimeList(List<TimeSegment> timeList) {
+        this.mTimeList = timeList;
+    }
+
     public void addTime(Date begin, Date end) {
         mTimeList.add(new TimeSegment(begin, end));
     }
@@ -44,5 +49,25 @@ public class Task {
 
     public String getID() {
         return id.toString();
+    }
+
+    public List<TimeSegment> getTimeList() {
+        return this.mTimeList;
+    }
+
+    public Task getSegmentsByDate(Date date) {
+        List<TimeSegment> timeList = new ArrayList<>();
+        for (int i = 0; i < mTimeList.size(); i++) {
+            if (mTimeList.get(i).onDate(date)) {
+                timeList.add(new TimeSegment(mTimeList.get(i)));
+            }
+        }
+        if (timeList.size() == 0) {
+            return null;
+        }
+        Task result = new Task(name, description);
+        result.setId(id);
+        result.setTimeList(timeList);
+        return result;
     }
 }

@@ -1,5 +1,6 @@
 package timetracker.yw.timetracker;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
@@ -17,6 +18,22 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
     private int currYear;
     private Button timeSelect;
     private DateAdapter mAdapter;
+    private TaskManager mTaskManager;
+    private Activity mActivity;
+
+    public CalendarFragment() {
+        mAdapter = new DateAdapter();
+    }
+
+    public void setTaskManager(TaskManager taskManager) {
+        mTaskManager = taskManager;
+        mAdapter.setTaskManager(mTaskManager);
+    }
+
+    public void setActivity(Activity activity) {
+        mActivity = activity;
+        mAdapter.setActivity(mActivity);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
