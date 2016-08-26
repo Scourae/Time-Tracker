@@ -13,9 +13,12 @@ import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.PriorityQueue;
 
 public class CalendarDayFragment extends Fragment implements View.OnClickListener {
     private DayAdapter mDayAdapter;
@@ -25,6 +28,7 @@ public class CalendarDayFragment extends Fragment implements View.OnClickListene
     private Button leftArrow;
     private Button rightArrow;
     private Button timeSelect;
+    private int year;
     private int month;
     private int day;
 
@@ -37,7 +41,8 @@ public class CalendarDayFragment extends Fragment implements View.OnClickListene
         mDayAdapter.updateTasks(tasks);
     }
 
-    public void setMonthAndDay(int month, int day) {
+    public void setYearMonthDay(int year, int month, int day) {
+        this.year = year;
         this.month = month;
         this.day = day;
         timeSelect.setText(Integer.toString(month) + "/" + Integer.toString(day));
@@ -52,6 +57,27 @@ public class CalendarDayFragment extends Fragment implements View.OnClickListene
         timeSelect = (Button) view.findViewById(R.id.calendar_day_time_select);
 
         return view;
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view == leftArrow) {
+            if (day == 1) {
+                if (month == 0) {
+                    year--;
+                    month = 12;
+                }
+                else {
+                    month--;
+                }
+                Calendar cal = new GregorianCalendar(year, month, day);
+                day = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+            }
+            else {
+                day--;
+            }
+            // update
+        }
     }
 
     private class DayAdapter extends ArrayAdapter<Task> {
