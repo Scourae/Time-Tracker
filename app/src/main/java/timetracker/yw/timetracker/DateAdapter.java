@@ -23,6 +23,7 @@ public class DateAdapter extends BaseAdapter implements View.OnClickListener {
         mList = new ArrayList<>();
         sdf = new SimpleDateFormat("yyyy-MM-dd");
         mDayFragment = new CalendarDayFragment();
+        mDayFragment.setTaskManager(mTaskManager);
     }
 
     public void setTaskManager(TaskManager taskManager) {
@@ -43,8 +44,7 @@ public class DateAdapter extends BaseAdapter implements View.OnClickListener {
         String date_month_year = (String) view.getTag();
         try {
             Date date = sdf.parse(date_month_year);
-            List<Task> tasksForDate = mTaskManager.getTaskByDate(date);
-            mDayFragment.setTasks(tasksForDate);
+            mDayFragment.updateTasks(date);
             FragmentManager fragmentManager = mActivity.getFragmentManager();
             FragmentTransaction transaction = fragmentManager.beginTransaction();
             transaction.replace(R.id.content_frame, mDayFragment);

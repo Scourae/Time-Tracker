@@ -16,12 +16,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.PriorityQueue;
 
 public class CalendarDayFragment extends Fragment implements View.OnClickListener {
     private DayAdapter mDayAdapter;
+    private TaskManager mTaskManager;
     private Context mContext;
     private String timeFormat = "HH:mm:ss";
     private SimpleDateFormat sdf;
@@ -41,11 +43,22 @@ public class CalendarDayFragment extends Fragment implements View.OnClickListene
         mDayAdapter.updateTasks(tasks);
     }
 
-    public void setYearMonthDay(int year, int month, int day) {
-        this.year = year;
-        this.month = month;
-        this.day = day;
-        timeSelect.setText(Integer.toString(month) + "/" + Integer.toString(day));
+    public void setTaskManager(TaskManager manager) {
+        mTaskManager = manager;
+    }
+
+    public void updateTasks(Date date) {
+        setTasks(mTaskManager.getTaskByDate(date));
+        setYearMonthDay(date);
+    }
+
+    public void setYearMonthDay(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        this.year = cal.get(Calendar.YEAR);
+        this.month = cal.get(Calendar.MONTH);
+        this.day = cal.get(Calendar.DAY_OF_MONTH);
+        timeSelect.setText(Integer.toString(month+1) + "/" + Integer.toString(day));
     }
 
     @Override
@@ -65,7 +78,7 @@ public class CalendarDayFragment extends Fragment implements View.OnClickListene
             if (day == 1) {
                 if (month == 0) {
                     year--;
-                    month = 12;
+                    month = 11;
                 }
                 else {
                     month--;
@@ -76,8 +89,25 @@ public class CalendarDayFragment extends Fragment implements View.OnClickListene
             else {
                 day--;
             }
-            // update
         }
+        else if (view == rightArrow) {
+            Calendar cal = new GregorianCalendar(year, month, day);
+            if (day == cal.getActualMaximum(Calendar.DAY_OF_MONTH)) {
+                if (month == 11) {
+                    month = 0;
+                    year++;
+                }
+                else {
+                    month++;
+                }
+                day = 1;
+            }
+            else {
+                day--;
+            }
+        }
+        Calendar cal = new GregorianCalendar(year, month, day);
+        updateTasks(cal.getTime());
     }
 
     private class DayAdapter extends ArrayAdapter<Task> {
