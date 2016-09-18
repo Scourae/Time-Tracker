@@ -22,5 +22,8 @@
     <string name="cancel">Cancel</string>
     <string name="left_arrow">&lt;</string>
     <string name="right_arrow">&gt;</string>
-    <string name="calenar_day_intro">Tasks:</string>
+    <string name="calendar_day_intro">Tasks:</string>
+    <string name="calendar_day_nothing">There is nothing here.</string>
+
+    <item type="id" name="CALENDAR_DETAIL_ID"/>
 </resources>

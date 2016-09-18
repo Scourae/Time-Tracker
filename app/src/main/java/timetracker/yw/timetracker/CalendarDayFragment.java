@@ -11,6 +11,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -24,22 +26,32 @@ import java.util.PriorityQueue;
 public class CalendarDayFragment extends Fragment implements View.OnClickListener {
     private DayAdapter mDayAdapter;
     private TaskManager mTaskManager;
+    private DateAdapter mDateAdapter;
     private Context mContext;
     private String timeFormat = "HH:mm:ss";
     private SimpleDateFormat sdf;
     private Button leftArrow;
     private Button rightArrow;
     private Button timeSelect;
+    private TextView intro;
+    private TextView nothing;
     private int year;
     private int month;
     private int day;
 
     public CalendarDayFragment() {
-        mDayAdapter = new DayAdapter();
         sdf = new SimpleDateFormat(timeFormat);
     }
 
     public void setTasks(List<Task> tasks) {
+        if (tasks.size() == 0) {
+            intro.setVisibility(View.GONE);
+            nothing.setVisibility(View.VISIBLE);
+        }
+        else {
+            intro.setVisibility(View.VISIBLE);
+            nothing.setVisibility(View.GONE);
+        }
         mDayAdapter.updateTasks(tasks);
     }
 
@@ -47,9 +59,20 @@ public class CalendarDayFragment extends Fragment implements View.OnClickListene
         mTaskManager = manager;
     }
 
+    public void setDateAdapter(DateAdapter dateAdapter) {
+        this.mDateAdapter = dateAdapter;
+    }
+
     public void updateTasks(Date date) {
         setTasks(mTaskManager.getTaskByDate(date));
+        setYearMonthDayUpdate(date);
+        mDateAdapter.setMonth(month);
+        mDateAdapter.setYear(year);
+    }
+
+    public void setYearMonthDayUpdate(Date date) {
         setYearMonthDay(date);
+        timeSelect.setText(Integer.toString(month+1) + "/" + Integer.toString(day));
     }
 
     public void setYearMonthDay(Date date) {
@@ -58,17 +81,23 @@ public class CalendarDayFragment extends Fragment implements View.OnClickListene
         this.year = cal.get(Calendar.YEAR);
         this.month = cal.get(Calendar.MONTH);
         this.day = cal.get(Calendar.DAY_OF_MONTH);
-        timeSelect.setText(Integer.toString(month+1) + "/" + Integer.toString(day));
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+        mDayAdapter = new DayAdapter();
         View view = inflater.inflate(R.layout.calendar_day_fragment, container, false);
         leftArrow = (Button) view.findViewById(R.id.calendar_day_left_arrow);
+        leftArrow.setOnClickListener(this);
         rightArrow = (Button) view.findViewById(R.id.calendar_day_right_arrow);
+        rightArrow.setOnClickListener(this);
         timeSelect = (Button) view.findViewById(R.id.calendar_day_time_select);
-
+        timeSelect.setOnClickListener(this);
+        intro = (TextView) view.findViewById(R.id.calendar_day_intro);
+        nothing = (TextView) view.findViewById(R.id.calendar_day_nothing);
+        Calendar cal = new GregorianCalendar(year, month, day);
+        updateTasks(cal.getTime());
         return view;
     }
 
@@ -103,7 +132,7 @@ public class CalendarDayFragment extends Fragment implements View.OnClickListene
                 day = 1;
             }
             else {
-                day--;
+                day++;
             }
         }
         Calendar cal = new GregorianCalendar(year, month, day);
@@ -167,6 +196,11 @@ public class CalendarDayFragment extends Fragment implements View.OnClickListene
             String timeText = sdf.format(mTimeSegments.get(position).getBegin()) + " to " + sdf.format(mTimeSegments.get(position).getEnd());
             viewHolder.time.setText(timeText);
             return convertView;
+        }
+
+        @Override
+        public int getCount() {
+            return mTimeSegments.size();
         }
     }
 }

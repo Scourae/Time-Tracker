@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.TextView;
 
 import java.util.Calendar;
@@ -39,8 +40,8 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View calendarView = inflater.inflate(R.layout.calendar_fragment, container, false);
-        currMonth = Calendar.MONTH;
-        currYear = Calendar.YEAR;
+        currMonth = mAdapter.getMonth();
+        currYear = mAdapter.getYear();
         timeSelect = (Button) calendarView.findViewById(R.id.calendar_time_select);
         String time = Integer.toString(currYear) + "/";
         if (currMonth < 9) {
@@ -48,6 +49,10 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
         }
         time += Integer.toString(currMonth+1);
         timeSelect.setText(time);
+
+        GridView calendarGrid = (GridView) calendarView.findViewById(R.id.calendar);
+        calendarGrid.setAdapter(mAdapter);
+        mAdapter.notifyDataSetChanged();
 
         return calendarView;
     }
